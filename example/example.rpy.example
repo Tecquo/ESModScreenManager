@@ -12,7 +12,7 @@ init python:
         
         # Префикс мода
         # МОЖЕТ БЫТЬ АБСОЛЮТНОЕ ЛЮБОЕ СЛОВО ИЛИ СЛОВОСОЧЕТАНИЕ, ОТДЕЛЯЮЩЕЕ РЕСУРСЫ ВАШЕГО МОДА ОТ ДРУГИХ
-        # префикс - это когда вы хотите добавить, например, свою переменную, или свои экраны, и в начале пишете любое слово, например, my_prefix - это и есть префикс
+        # префикс - это когда Вы хотите добавить, например, свою переменную, или свои экраны, и в начале пишете любое слово, например, my_prefix - это и есть префикс
         # пример - my_prefix_variable или my_prefix_dialogue_screen, здесь "my_prefix" выступает префиксом
         # соотвественно, вот этот my_prefix в конце имени переменной/экрана - это уже постфикс, не префикс.
         MOD_ID = "my_mod"
@@ -70,9 +70,9 @@ label my_mod_start:
     # или
     #$ save_name = my_mod_ModScreenManagerConfig.MOD_NAME
     # если надо добавить ещё какой-то текст для например обозначения дня, то
-    #$ save_name = my_mod_ModScreenManagerConfig.MOD_SAVE_IDENTIFIER + "Любой текст, который вы хотите"
+    #$ save_name = my_mod_ModScreenManagerConfig.MOD_SAVE_IDENTIFIER + "Любой текст, который Вы хотите"
     # или
-    #$ save_name = my_mod_ModScreenManagerConfig.MOD_NAME + "Любой текст, который вы хотите"
+    #$ save_name = my_mod_ModScreenManagerConfig.MOD_NAME + "Любой текст, который Вы хотите"
     # так он всегда будет в Вашем имени сохранения
 
     $ my_mod_screen_manager.activate_screens()

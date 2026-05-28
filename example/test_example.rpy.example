@@ -15,9 +15,9 @@ label mod_screen_manager_init:
     # или
     #$ save_name = my_mod_ModScreenManagerConfig.MOD_NAME
     # если надо добавить ещё какой-то текст для например обозначения дня, то
-    #$ save_name = my_mod_ModScreenManagerConfig.MOD_SAVE_IDENTIFIER + "Любой текст, который вы хотите"
+    #$ save_name = my_mod_ModScreenManagerConfig.MOD_SAVE_IDENTIFIER + "Любой текст, который Вы хотите"
     # или
-    #$ save_name = my_mod_ModScreenManagerConfig.MOD_NAME + "Любой текст, который вы хотите"
+    #$ save_name = my_mod_ModScreenManagerConfig.MOD_NAME + "Любой текст, который Вы хотите"
     # так он всегда будет в Вашем имени сохранения
 
     jump mod_screen_manager_test

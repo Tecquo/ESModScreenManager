@@ -4,8 +4,8 @@ init -1 python:
     class ModScreenManagerConfig:
         """Конфигурация параметров мода."""
         # Основные параметры
-        MOD_NAME = u"Мой мод"  # Название вашего мода
-        MOD_ID = "my_mod" # Префикс вашего мода
+        MOD_NAME = u"Мой мод"  # Название Вашего мода
+        MOD_ID = "my_mod" # Префикс Вашего мода
         MOD_SAVE_IDENTIFIER = "MyMod"  # Идентификатор в названии сохранения
         RENPY_MIN_VERSION = "7.0"  # Минимальная совместимая версия Ren'Py
 
