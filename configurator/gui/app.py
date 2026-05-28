@@ -2,6 +2,7 @@
 
 import os
 import sys
+import json
 import threading
 import customtkinter as ctk
 from pathlib import Path
@@ -10,7 +11,7 @@ from typing import Optional
 
 from .config_frame import ConfigFrame
 from .screens_frame import ScreensFrame
-from ..core import ConfigData, FileProcessor, ConfigGenerator, Validator
+from core import ConfigData, FileProcessor, ConfigGenerator, Validator
 
 
 class ModScreenManagerApp(ctk.CTk):
@@ -36,7 +37,9 @@ class ModScreenManagerApp(ctk.CTk):
         # определяем директорию шаблонов
         if getattr(sys, 'frozen', False):
             # если запущено как exe
-            base_dir = Path(sys._MEIPASS)
+            # _MEIPASS - атрибут PyInstaller, указывающий на директорию с распакованными ресурсами
+            meipass = getattr(sys, '_MEIPASS', None)
+            base_dir = Path(meipass) if meipass else Path(__file__).parent.parent
         else:
             # если запущено как скрипт
             base_dir = Path(__file__).parent.parent
@@ -52,6 +55,12 @@ class ModScreenManagerApp(ctk.CTk):
         # текущий конфиг
         self.config = ConfigData()
         self.include_test_example = False
+        
+        # путь к файлу настроек
+        self._settings_file = self.project_dir / "configurator_settings.json"
+        
+        # загружаем сохранённые настройки
+        self._load_settings()
         
         # флаг для предотвращения повторного запуска
         self._is_processing = False
@@ -346,7 +355,7 @@ class ModScreenManagerApp(ctk.CTk):
                 lines = content.split('\n')
                 new_lines = []
                 in_config_class = False
-                class_start_indent = None
+                class_start_indent = 0
                 class_depth = 0  # отслеживаем глубину для вложенных классов
                 
                 for line in lines:

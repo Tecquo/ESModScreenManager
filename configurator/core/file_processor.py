@@ -3,7 +3,7 @@
 import os
 import shutil
 from pathlib import Path
-from typing import Tuple, List, Dict
+from typing import Tuple, List, Dict, Union
 import re
 
 
@@ -21,7 +21,7 @@ class FileProcessor:
     
     def copy_and_process(
         self,
-        target_dir: Path,
+        target_dir: Union[Path, str],
         mod_id: str,
         include_test_example: bool = False
     ) -> Tuple[List[str], List[str], List[str]]:

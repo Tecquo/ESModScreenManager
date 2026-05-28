@@ -2,16 +2,17 @@
 
 import os
 import customtkinter as ctk
+import tkinter as tk
 from pathlib import Path
 from typing import Callable, Optional
 from .widgets.tooltip import Tooltip
-from ..core.config_data import FIELD_METADATA, ConfigData
+from core.config_data import FIELD_METADATA, ConfigData
 
 
 class ConfigFrame(ctk.CTkFrame):
     """фрейм с формой конфигурации"""
     
-    def __init__(self, parent, on_path_change: Optional[Callable] = None, **kwargs):
+    def __init__(self, parent, on_path_change: "Callable[[], None] | None" = None, **kwargs):
         """
         инициализация фрейма конфигурации
         
@@ -180,21 +181,21 @@ class ConfigFrame(ctk.CTkFrame):
         
         # тултип если есть
         if field_key in FIELD_METADATA:
-            tooltip_btn = ctk.CTkButton(
+            # используем обычный tk.Label для отображения (?) - он корректно обрабатывает события мыши
+            # bg убираем - будет использовать системный по умолчанию
+            tooltip_label = tk.Label(
                 frame,
                 text="(?)",
-                width=24,
-                height=24,
-                font=ctk.CTkFont(size=12, weight="bold"),
-                fg_color="transparent",
-                border_width=0,
-                text_color="#888888",
-                hover_color="#555555"
+                width=3,
+                font=("TkDefaultFont", 12, "bold"),
+                fg="#888888",
+                cursor="question_arrow"
             )
-            tooltip_btn.pack(side="left", padx=2)
+            tooltip_label.pack(side="left", padx=2)
+            print(f"Creating tooltip for field: {field_key}, widget: {tooltip_label}")  # DEBUG
             
             Tooltip(
-                tooltip_btn,
+                tooltip_label,
                 **FIELD_METADATA[field_key]
             )
     
@@ -207,21 +208,21 @@ class ConfigFrame(ctk.CTkFrame):
         
         # тултип если есть
         if field_key in FIELD_METADATA:
-            tooltip_btn = ctk.CTkButton(
+            # используем обычный tk.Label для отображения (?) - он корректно обрабатывает события мыши
+            # bg убираем - будет использовать системный по умолчанию
+            tooltip_label = tk.Label(
                 parent,
                 text="(?)",
-                width=24,
-                height=24,
-                font=ctk.CTkFont(size=12, weight="bold"),
-                fg_color="transparent",
-                border_width=0,
-                text_color="#888888",
-                hover_color="#555555"
+                width=3,
+                font=("TkDefaultFont", 12, "bold"),
+                fg="#888888",
+                cursor="question_arrow"
             )
-            tooltip_btn.pack(anchor="w", pady=2)
+            tooltip_label.pack(anchor="w", pady=2)
+            print(f"Creating tooltip for checkbox: {field_key}, widget: {tooltip_label}")  # DEBUG
             
             Tooltip(
-                tooltip_btn,
+                tooltip_label,
                 **FIELD_METADATA[field_key]
             )
     

@@ -7,7 +7,7 @@ import tkinter as tk
 class Tooltip:
     """окно тултипа которое появляется при наведении"""
     
-    def __init__(self, widget, title: str, description: str, example: str = None):
+    def __init__(self, widget, title: str, description: str, example: "str | None" = None):
         """
         создать тултип
         
@@ -23,8 +23,24 @@ class Tooltip:
         self.example = example
         self.tooltip_window = None
         
-        self.widget.bind("<Enter>", self._on_enter)
-        self.widget.bind("<Leave>", self._on_leave)
+        # используем after на виджете чтобы виджет точно был создан
+        self.widget.after(100, self._setup_bindings)
+    
+    def _setup_bindings(self):
+        """настроить обработчики событий после создания виджета"""
+        try:
+            self.widget.bind("<Enter>", lambda e: self._on_enter())
+            self.widget.bind("<Leave>", lambda e: self._on_leave())
+            self.widget.bind("<Button-1>", lambda e: self._on_click())
+        except Exception:
+            pass
+    
+    def _on_click(self, event=None):
+        """показать/скрыть тултип по клику"""
+        if self.tooltip_window:
+            self._on_leave()
+        else:
+            self._on_enter()
     
     def _on_enter(self, event=None):
         """показать тултип"""
@@ -38,6 +54,11 @@ class Tooltip:
         # создаем окошко
         self.tooltip_window = tk.Toplevel(self.widget)
         self.tooltip_window.wm_overrideredirect(True)
+        # делаем окно всегда сверху
+        self.tooltip_window.attributes('-topmost', True)
+        
+        # показываем окно
+        self.tooltip_window.deiconify()
         
         # связываем с родительским окном для корректного поведения
         self.tooltip_window.transient(self.widget.winfo_toplevel())
@@ -58,37 +79,39 @@ class Tooltip:
         
         self.tooltip_window.wm_geometry(f"+{x + 20}+{y + 20}")
         
-        # настраиваем вид
+        # настраиваем вид - используем обычный tk.Frame вместо CTkFrame
         self.tooltip_window.configure(bg="#2b2b2b")
         
-        # контент
-        frame = ctk.CTkFrame(
+        # контент - используем tk.Frame
+        frame = tk.Frame(
             self.tooltip_window,
-            fg_color="#2b2b2b",
-            border_color="#3b3b3b",
-            border_width=1
+            bg="#2b2b2b",
+            highlightthickness=1,
+            highlightbackground="#3b3b3b"
         )
         frame.pack(fill="both", expand=True, padx=4, pady=4)
         
-        # заголовок
-        title_label = ctk.CTkLabel(
+        # заголовок - используем tk.Label
+        title_label = tk.Label(
             frame,
             text=self.title,
-            font=ctk.CTkFont(weight="bold", size=14),
-            text_color="#ffffff"
+            font=("TkDefaultFont", 14, "bold"),
+            fg="#ffffff",
+            bg="#2b2b2b"
         )
         title_label.pack(anchor="w", padx=8, pady=(8, 4))
         
         # разделитель
-        sep = ctk.CTkFrame(frame, height=1, fg_color="#3b3b3b")
+        sep = tk.Frame(frame, height=1, bg="#3b3b3b")
         sep.pack(fill="x", padx=4, pady=4)
         
         # описание
-        desc_label = ctk.CTkLabel(
+        desc_label = tk.Label(
             frame,
             text=self.description,
-            font=ctk.CTkFont(size=12),
-            text_color="#cccccc",
+            font=("TkDefaultFont", 12),
+            fg="#cccccc",
+            bg="#2b2b2b",
             wraplength=350,
             justify="left"
         )
@@ -96,18 +119,19 @@ class Tooltip:
         
         # пример (если есть)
         if self.example:
-            example_label = ctk.CTkLabel(
+            example_label = tk.Label(
                 frame,
                 text=f"Пример:\n{self.example}",
-                font=ctk.CTkFont(size=11, slant="italic"),
-                text_color="#888888",
+                font=("TkDefaultFont", 11),
+                fg="#888888",
+                bg="#2b2b2b",
                 wraplength=350,
                 justify="left"
             )
             example_label.pack(anchor="w", padx=8, pady=(4, 8))
         else:
             # отступ снизу
-            ctk.CTkLabel(frame, text="", height=4).pack()
+            tk.Label(frame, text="", height=4, bg="#2b2b2b").pack()
     
     def _on_leave(self, event=None):
         """скрыть тултип"""
@@ -122,7 +146,7 @@ class Tooltip:
 class TooltipLabel(ctk.CTkLabel):
     """label со встроенным тултипом"""
     
-    def __init__(self, parent, title: str, description: str, example: str = None, **kwargs):
+    def __init__(self, parent, title: str, description: str, example: "str | None" = None, **kwargs):
         """
         создать лейбл с тултипом
         

@@ -3,13 +3,13 @@
 import customtkinter as ctk
 from typing import Callable
 from .widgets.tooltip import Tooltip, TooltipCheckBox
-from ..core.config_data import SCREENS, SCREEN_DESCRIPTIONS, DEFAULT_SCREENS
+from core.config_data import SCREENS, SCREEN_DESCRIPTIONS, DEFAULT_SCREENS
 
 
 class ScreensFrame(ctk.CTkFrame):
     """фрейм с чекбоксами выбора экранов"""
     
-    def __init__(self, parent, on_change: Callable = None, **kwargs):
+    def __init__(self, parent, on_change: "Callable[[], None] | None" = None, **kwargs):
         """
         инициализация фрейма выбора экранов
         
@@ -47,17 +47,20 @@ class ScreensFrame(ctk.CTkFrame):
         )
         desc.pack(anchor="w", padx=20, pady=(0, 15))
         
-        # сетка чекбоксов
+        # две колонки с использованием grid
         grid_frame = ctk.CTkFrame(self, fg_color="transparent")
         grid_frame.pack(fill="both", expand=True, padx=20, pady=10)
         
-        # две колонки
-        left_col = []
-        right_col = []
+        # настраиваем колонки
+        grid_frame.columnconfigure(0, weight=1)
+        grid_frame.columnconfigure(1, weight=1)
         
         # делим экраны на две колонки
         screens_list = list(SCREENS.items())
         mid = (len(screens_list) + 1) // 2
+        
+        left_col = []
+        right_col = []
         
         for i, (code, name) in enumerate(screens_list):
             checkbox = TooltipCheckBox(
@@ -75,25 +78,19 @@ class ScreensFrame(ctk.CTkFrame):
             checkbox.configure(command=self._on_checkbox_change)
             
             if i < mid:
-                left_col.append(checkbox)
+                left_col.append((i, checkbox))
             else:
-                right_col.append(checkbox)
+                right_col.append((i - mid, checkbox))
             
             self.screen_checkboxes[code] = checkbox
         
         # левая колонка
-        left_frame = ctk.CTkFrame(grid_frame, fg_color="transparent")
-        left_frame.pack(side="left", fill="both", expand=True, padx=(0, 10))
-        
-        for cb in left_col:
-            cb.pack(anchor="w", pady=4)
+        for row, cb in left_col:
+            cb.grid(row=row, column=0, sticky="w", pady=4, padx=(0, 10))
         
         # правая колонка
-        right_frame = ctk.CTkFrame(grid_frame, fg_color="transparent")
-        right_frame.pack(side="right", fill="both", expand=True, padx=(10, 0))
-        
-        for cb in right_col:
-            cb.pack(anchor="w", pady=4)
+        for row, cb in right_col:
+            cb.grid(row=row, column=1, sticky="w", pady=4, padx=(10, 0))
     
     def _on_checkbox_change(self):
         """обработка изменения чекбокса"""
