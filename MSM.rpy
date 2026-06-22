@@ -1,6 +1,8 @@
 init -1 python:
     import builtins
 
+    _msm_defined_managers = { }
+
     class ModScreenManagerConfig:
         """Конфигурация параметров мода."""
         # Основные параметры
